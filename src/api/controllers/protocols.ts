@@ -1,6 +1,6 @@
 export interface IHttpReturn<T> {
-    StatusCode: number
-    message: string,
-    body: T
+  status?: boolean;
+  StatusCode: number;
+  message: string;
+  body: T;
 }
-  

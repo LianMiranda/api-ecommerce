@@ -25,13 +25,40 @@ export class UsersRepository {
 
   async findAll(){
     return this.model.findMany({
-        select: {
-            fullName: true,
-            email: true,
-            cpf: true,
-            birthday: true,
-            profileId: true,
-          },
-    })
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        cpf: true,
+        birthday: true,
+        profileId: true,
+      },
+    });
+  }
+
+  async findById(id: string) {
+    return this.model.findUnique({
+      where: { id },
+      select: {
+        fullName: true,
+        email: true,
+        cpf: true,
+        birthday: true,
+        profileId: true,
+      },
+    });
+  }
+
+  async delete(id: string) {
+    return this.model.delete({
+      where: { id },
+      select: {
+        fullName: true,
+        email: true,
+        cpf: true,
+        birthday: true,
+        profileId: true,
+      },
+    });
   }
 }

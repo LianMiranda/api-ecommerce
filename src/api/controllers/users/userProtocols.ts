@@ -8,9 +8,11 @@ export interface IUserInput {
 }
 
 export interface IUserReturns {
+    id?: string
     fullName: string;
     email: string;
     cpf: string;
     birthday: Date;
     profileId: string;
 }
+
