@@ -22,4 +22,16 @@ export class UsersRepository {
       },
     });
   }
+
+  async findAll() {
+    return this.model.findMany({
+        select: {
+            fullName: true,
+            email: true,
+            cpf: true,
+            birthday: true,
+            profileId: true,
+          },
+    })
+  }
 }
