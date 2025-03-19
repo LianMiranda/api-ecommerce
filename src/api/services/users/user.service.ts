@@ -14,7 +14,7 @@ export class UserService {
     const isNull = Object.values(data).some(
       (value) => value === null || value === ""
     );
-    //TODO Verificar email unico e cpf
+
     if (isNull) {
       return {
         status: false,
@@ -24,14 +24,34 @@ export class UserService {
       };
     }
 
-    const user: IUserReturns = await userRepository.create(data);
+    try {
+      const user: IUserReturns = await userRepository.create(data);
 
-    return {
-      status: true,
-      StatusCode: 201,
-      message: "Usuário criado com sucesso",
-      body: user,
-    };
+      return {
+        status: true,
+        StatusCode: 201,
+        message: "Usuário criado com sucesso",
+        body: user,
+      };
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((error as any).code === "P2002") {
+        return {
+          status: false,
+          StatusCode: 400,
+          message: "Email ou CPF já cadastrados",
+          body: {},
+        };
+      }
+
+      console.error(error);
+      return {
+        status: false,
+        StatusCode: 500,
+        message: "Internal server error",
+        body: {},
+      };
+    }
   }
 
   static async findAll(): Promise<IHttpReturn<IUserReturns[]>> {
@@ -72,7 +92,7 @@ export class UserService {
       status: false,
       StatusCode: 404,
       message: "Nenhum usuário encontrado",
-      body: [],
+      body: {},
     };
   }
 
