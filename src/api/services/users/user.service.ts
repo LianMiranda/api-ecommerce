@@ -6,7 +6,7 @@ import { IHttpReturn } from "../../controllers/protocols";
 const userRepository = new UsersRepository();
 
 export class UserService{
-    static async create(data: IUserInput):Promise<IHttpReturn<IUserReturns | object>>{
+    static async create(data: IUserInput):Promise<IHttpReturn<IUserReturns[] | object>>{
         const isNull = Object.values(data).some(value => value === null || value === "");
         //TODO Verificar email unico e cpf
         if(isNull){ 
@@ -17,7 +17,7 @@ export class UserService{
             }
         }
 
-        const user = await userRepository.create(data)
+        const user: IUserReturns = await userRepository.create(data)
         
         return{
             StatusCode: 200,
@@ -26,9 +26,9 @@ export class UserService{
         };    
     }
 
-    static async findAll():Promise<IHttpReturn<IUserReturns | object>>{
-        const user = await userRepository.findAll()
-        
+    static async findAll():Promise<IHttpReturn<IUserReturns[]>>{
+        const user: IUserReturns[] = await userRepository.findAll()
+
         if(user.length != 0){
             return{
                 StatusCode: 200,

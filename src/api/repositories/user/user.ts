@@ -23,7 +23,7 @@ export class UsersRepository {
     });
   }
 
-  async findAll() {
+  async findAll(){
     return this.model.findMany({
         select: {
             fullName: true,
