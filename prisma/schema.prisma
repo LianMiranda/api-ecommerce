@@ -6,17 +6,16 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
 model User {
   id        String    @id @default(uuid())
   fullName  String
   email     String    @unique
   password  String
   cpf       String    @unique
-  birthday  DateTime
+  birthday  DateTime  @db.Date
   products  Product[]
   profile   Profile   @relation(fields: [profileId], references: [id])
-  profileId String    @unique
+  profileId String   
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -27,7 +26,7 @@ model User {
 model Profile {
   id        String   @id @default(uuid())
   profile   String
-  users     User?
+  users     User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
