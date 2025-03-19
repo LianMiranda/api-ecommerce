@@ -4,6 +4,7 @@ import {
   IUserReturns,
 } from "../../controllers/users/userProtocols";
 import { IHttpReturn } from "../../controllers/protocols";
+import { hashPassword } from "../../../helpers/encryption";
 
 const userRepository = new UsersRepository();
 
@@ -23,6 +24,10 @@ export class UserService {
         body: {},
       };
     }
+
+    const hash = await hashPassword(data.password);
+
+    data.password = hash.toString();
 
     try {
       const user: IUserReturns = await userRepository.create(data);
