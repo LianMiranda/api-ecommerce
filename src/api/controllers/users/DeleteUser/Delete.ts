@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { UserService } from "../../services/users/user.service";
+import { UserService } from "../../../services/users/user.service";
 
 export async function deleteUser(
   req: Request,
