@@ -2,6 +2,7 @@ import express from "express";
 import { createUserController } from "../api/useCases/user/CreateUser";
 import { findAllUsersController } from "../api/useCases/user/FindAllUsers";
 import { findUserByIdController } from "../api/useCases/user/FindUserById";
+import { updateUserController } from "../api/useCases/user/UpdateUser";
 
 export const router = express.Router();
 
@@ -16,4 +17,8 @@ router.get("/users", async (req, res) => {
 
 router.get("/user/:id", async (req, res) => {
     findUserByIdController.findUserById(req, res)
+});
+
+router.put("/user/:id", async (req, res) => {
+    updateUserController.update(req, res)
 });

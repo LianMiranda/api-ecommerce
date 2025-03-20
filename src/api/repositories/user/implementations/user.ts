@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import {
   IUserInput,
-  IUserReturns,
   IUserUpdate,
 } from "../../../controllers/users/userProtocols";
 import { IUserRepository } from "../IUserRepository";
+import { User } from "../../../entities/User";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +15,7 @@ export class UsersRepository implements IUserRepository {
     this.model = prisma.user;
   }
 
-  async create(data: IUserInput): Promise<IUserReturns> {
+  async create(data: IUserInput): Promise<User> {
     return this.model.create({
       data: data,
       select: {
@@ -30,7 +30,7 @@ export class UsersRepository implements IUserRepository {
     });
   }
 
-  async findAll(): Promise<IUserReturns[]> {
+  async findAll(): Promise<User[]> {
     return this.model.findMany({
       select: {
         id: true,
@@ -44,10 +44,11 @@ export class UsersRepository implements IUserRepository {
     });
   }
 
-  async findById(id: string):Promise<IUserReturns | null> {
+  async findById(id: string):Promise<User | null> {
     return this.model.findUnique({
       where: { id },
       select: {
+        id: true,
         fullName: true,
         email: true,
         password: true,
@@ -58,17 +59,18 @@ export class UsersRepository implements IUserRepository {
     });
   }
 
-  async update(id: string, data: Partial<IUserUpdate>): Promise<IUserReturns>{
+  async update(id: string, data: Partial<IUserUpdate>): Promise<User>{
     return this.model.update({
       where: { id },
       data: data,
     });
   }
 
-  async delete(id: string): Promise<IUserReturns>{
+  async delete(id: string): Promise<User>{
     return this.model.delete({
       where: { id },
       select: {
+        id: true,
         fullName: true,
         password: true,
         email: true,

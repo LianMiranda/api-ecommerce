@@ -1,20 +1,26 @@
-import { NextFunction, Request, Response } from "express";
-import { UserService } from "../../services/users/user.service";
-import { IUserUpdate } from "./userProtocols";
+import { Request, Response } from "express";
+import { UpdateUserUseCase } from "../../../useCases/user/UpdateUser/UpdateUserUseCase";
 
-export async function update(
-  req: Request<{id: string},0,IUserUpdate>,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const id = req.params.id;
-    const data = req.body
+export class UpdateUserController {
 
-    const {StatusCode, message, body } = await UserService.update(id, data);
+  constructor(
+    private updateUserUseCase: UpdateUserUseCase
+  ){}
 
-    res.status(StatusCode).json({ message, body });
-  } catch (error) {
-    next(error);
+  async update(
+    req: Request,
+    res: Response,
+  ):Promise<Response>{
+    try {
+      const id = req.params.id;
+      const data = req.body;
+
+      const { StatusCode, message, body } = await this.updateUserUseCase.update(id, data);
+
+      return res.status(StatusCode).json({ message, body });
+    } catch (error) {
+      return res.status(500).json({error: "Internal server error"})
+      console.error(error);
+    }
   }
 }
