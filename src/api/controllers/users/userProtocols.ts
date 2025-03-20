@@ -7,18 +7,16 @@ export interface IUserInput {
   profileId: string;
 }
 
+export interface IUserUpdate extends Partial<IUserInput> {
+  actualPassword?: string;
+}
+
 export interface IUserReturns {
-    id?: string
-    fullName: string;
-    email: string;
-    password: string;
-    cpf: string;
-    birthday: Date;
-    profileId: string;
+  id?: string;
+  fullName: string;
+  email: string;
+  password: string;
+  cpf: string;
+  birthday: Date;
+  profileId?: string;
 }
-export interface IUserUpdate extends IUserInput {
-   actualPassword: string;
-}
-
-
-

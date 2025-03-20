@@ -1,4 +1,3 @@
-import { UsersRepository } from "../../repositories/user/user";
 import {
   IUserInput,
   IUserReturns,
@@ -6,13 +5,11 @@ import {
 } from "../../controllers/users/userProtocols";
 import { IHttpReturn } from "../../controllers/protocols";
 import { compare, hashPassword } from "../../../helpers/encryption";
-
-const userRepository = new UsersRepository();
-
+import { IUserRepository } from "../../repositories/user/protocols";
 export class UserService {
-  static async create(
-    data: IUserInput
-  ): Promise<IHttpReturn<IUserReturns | object>> {
+  constructor(private userRepository: IUserRepository) {}
+
+  async create(data: IUserInput): Promise<IHttpReturn<IUserReturns | object>> {
     const isNull = Object.values(data).some(
       (value) => value === null || value === ""
     );
@@ -28,10 +25,10 @@ export class UserService {
 
     const hash = await hashPassword(data.password);
 
-    data.password = hash
+    data.password = hash;
 
     try {
-      const user: IUserReturns = await userRepository.create(data);
+      const user: IUserReturns = await this.userRepository.create(data);
 
       return {
         status: true,
@@ -51,7 +48,7 @@ export class UserService {
       }
 
       console.error(error);
-      
+
       return {
         status: false,
         StatusCode: 500,
@@ -61,8 +58,8 @@ export class UserService {
     }
   }
 
-  static async findAll(): Promise<IHttpReturn<IUserReturns[]>> {
-    const user: IUserReturns[] = await userRepository.findAll();
+   async findAll(): Promise<IHttpReturn<IUserReturns[]>> {
+    const user: IUserReturns[] = await this.userRepository.findAll();
 
     if (user.length != 0) {
       return {
@@ -81,10 +78,10 @@ export class UserService {
     };
   }
 
-  static async findById(
+  async findById(
     id: string
   ): Promise<IHttpReturn<IUserReturns | object>> {
-    const user: IUserReturns | null = await userRepository.findById(id);
+    const user: IUserReturns | null = await this.userRepository.findById(id);
 
     if (user) {
       return {
@@ -103,41 +100,52 @@ export class UserService {
     };
   }
 
-  static async update(
+  async update(
     id: string,
-    data: IUserUpdate
-  ):Promise<IHttpReturn<IUserInput | object>>{
-    const userUpdate: Partial<{fullName: string, email: string, password: string, cpf: string, birthday: Date}> = {};
+    data: Partial<IUserUpdate>
+  ): Promise<IHttpReturn<IUserReturns | object>> {
 
-    if(data.fullName && data.fullName.trim() != "") userUpdate.fullName = data.fullName;
-    if(data.email && data.email.trim() != "") userUpdate.email = data.email;
-    if(data.password && data.password.trim() != ""){
-      const user = await this.findById(id);
 
-      const userBody = user.body as IUserReturns;
+    const user = await this.findById(id);
+    
+    if(!user.status){
+      return {
+        status: false,
+        StatusCode: 404,
+        message: "Usuário não encontrado",
+        body: {},
+      };
+    }
 
-      const verifyValidPassword = await compare(data.actualPassword, userBody.password);
+    const userBody = user.body as IUserReturns;
+    const userUpdate: IUserUpdate = {};
 
-      if(!verifyValidPassword){
+    if (data.fullName && data.fullName.trim() != "") userUpdate.fullName = data.fullName;
+    if (data.email && data.email.trim() != "") userUpdate.email = data.email;
+    if (data.cpf && data.cpf.trim() != "") userUpdate.cpf = data.cpf;
+    if (data.birthday && data.birthday.toString().trim() != "") userUpdate.birthday = new Date(data.birthday);
+
+    if (data.password && data.password.trim() != "") {
+
+      const isValidPassword = await compare(data.actualPassword ?? "", userBody.password);
+
+      if (!isValidPassword) {
         return {
           status: false,
           StatusCode: 400,
           message: "As senhas não condizem",
-          body: {}
+          body: {},
         };
       }
-      
+
       const hash = await hashPassword(data.password);
 
       userUpdate.password = hash;
-
     }
-    if(data.cpf && data.cpf.trim() != "") userUpdate.cpf = data.cpf;
-    if(data.birthday && data.birthday.toString().trim() != "") userUpdate.birthday = new Date(data.birthday);
+  
 
     try {
-
-      const update = await userRepository.update(id, userUpdate);
+      const update = await this.userRepository.update(id, userUpdate);
 
       return {
         status: true,
@@ -145,7 +153,6 @@ export class UserService {
         message: "Usuário atualizado com sucesso",
         body: update,
       };
-
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((error as any).code === "P2002") {
@@ -158,32 +165,32 @@ export class UserService {
       }
 
       console.log(error);
-      
+
       return {
         status: false,
         StatusCode: 500,
         message: "Internal server error",
         body: {},
-      };;
+      };
     }
-
-
   }
 
-  static async delete(id: string): Promise<IHttpReturn<IUserReturns | object>> {
+  async delete(id: string): Promise<IHttpReturn<IUserReturns | object>> {
     const verifyUserExists = await this.findById(id);
 
     if (!verifyUserExists.status) {
       return {
+        status: false,
         StatusCode: 404,
         message: "Nenhum usuário encontrado",
         body: {},
       };
     }
 
-    const user = await userRepository.delete(id);
+    const user = await this.userRepository.delete(id);
 
     return {
+      status: true,
       StatusCode: 200,
       message: "Usuário deletado",
       body: user,
