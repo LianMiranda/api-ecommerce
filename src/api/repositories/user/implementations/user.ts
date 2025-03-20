@@ -3,13 +3,13 @@ import {
   IUserInput,
   IUserReturns,
   IUserUpdate,
-} from "../../controllers/users/userProtocols";
-import { IUserRepository } from "./protocols";
+} from "../../../controllers/users/userProtocols";
+import { IUserRepository } from "../IUserRepository";
 
 const prisma = new PrismaClient();
 
 export class UsersRepository implements IUserRepository {
-  model;
+  private model;
 
   constructor() {
     this.model = prisma.user;

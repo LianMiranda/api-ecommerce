@@ -1,62 +1,14 @@
 import {
-  IUserInput,
   IUserReturns,
   IUserUpdate,
 } from "../../controllers/users/userProtocols";
 import { IHttpReturn } from "../../controllers/protocols";
 import { compare, hashPassword } from "../../../helpers/encryption";
-import { IUserRepository } from "../../repositories/user/protocols";
+import { IUserRepository } from "../../repositories/user/IUserRepository";
+
 export class UserService {
   constructor(private userRepository: IUserRepository) {}
 
-  async create(data: IUserInput): Promise<IHttpReturn<IUserReturns | object>> {
-    const isNull = Object.values(data).some(
-      (value) => value === null || value === ""
-    );
-
-    if (isNull) {
-      return {
-        status: false,
-        StatusCode: 400,
-        message: "Verifique os campos!",
-        body: {},
-      };
-    }
-
-    const hash = await hashPassword(data.password);
-
-    data.password = hash;
-
-    try {
-      const user: IUserReturns = await this.userRepository.create(data);
-
-      return {
-        status: true,
-        StatusCode: 201,
-        message: "Usuário criado com sucesso",
-        body: user,
-      };
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((error as any).code === "P2002") {
-        return {
-          status: false,
-          StatusCode: 400,
-          message: "Email ou CPF já cadastrados",
-          body: {},
-        };
-      }
-
-      console.error(error);
-
-      return {
-        status: false,
-        StatusCode: 500,
-        message: "Internal server error",
-        body: {},
-      };
-    }
-  }
 
    async findAll(): Promise<IHttpReturn<IUserReturns[]>> {
     const user: IUserReturns[] = await this.userRepository.findAll();
@@ -100,7 +52,7 @@ export class UserService {
     };
   }
 
-  async update(
+  public async update(
     id: string,
     data: Partial<IUserUpdate>
   ): Promise<IHttpReturn<IUserReturns | object>> {
@@ -124,9 +76,7 @@ export class UserService {
     if (data.email && data.email.trim() != "") userUpdate.email = data.email;
     if (data.cpf && data.cpf.trim() != "") userUpdate.cpf = data.cpf;
     if (data.birthday && data.birthday.toString().trim() != "") userUpdate.birthday = new Date(data.birthday);
-
     if (data.password && data.password.trim() != "") {
-
       const isValidPassword = await compare(data.actualPassword ?? "", userBody.password);
 
       if (!isValidPassword) {
@@ -143,7 +93,6 @@ export class UserService {
       userUpdate.password = hash;
     }
   
-
     try {
       const update = await this.userRepository.update(id, userUpdate);
 
@@ -196,4 +145,6 @@ export class UserService {
       body: user,
     };
   }
+
+
 }

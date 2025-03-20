@@ -1,10 +1,9 @@
 import express from "express";
-import { UserController } from "../api/controllers/users";
+import { createUserController } from "../api/useCases/user/CreateUser";
 
 export const router = express.Router();
 
-router.post("/user", UserController.create);
-router.get("/users", UserController.findAll);
-router.get("/user/:id", UserController.findById);
-router.put("/user/:id", UserController.update);
-router.delete("/user/:id", UserController.deleteUser);
+
+router.post("/user", async (req, res) => {
+    createUserController.create(req, res)
+});
