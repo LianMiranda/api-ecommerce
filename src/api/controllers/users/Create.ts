@@ -11,7 +11,7 @@ export async function create(req: Request<0, 0, IUserInput>, res: Response, next
     res.status(StatusCode).json({message, body});
 
   } catch (error) {
-    console.error(error)
+    res.json({error: "Internal server error"})
     next(error)
   }
 }

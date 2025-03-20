@@ -16,6 +16,7 @@ export class UsersRepository {
       select: {
         fullName: true,
         email: true,
+        password: true,
         cpf: true,
         birthday: true,
         profileId: true,
@@ -29,6 +30,7 @@ export class UsersRepository {
         id: true,
         fullName: true,
         email: true,
+        password: true,
         cpf: true,
         birthday: true,
         profileId: true,
@@ -42,10 +44,18 @@ export class UsersRepository {
       select: {
         fullName: true,
         email: true,
+        password: true,
         cpf: true,
         birthday: true,
         profileId: true,
       },
+    });
+  }
+
+  async update(id: string, data: object) {
+    return this.model.update({
+      where: { id },
+      data: data
     });
   }
 
