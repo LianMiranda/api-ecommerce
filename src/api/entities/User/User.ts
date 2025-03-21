@@ -15,5 +15,14 @@ export class User{
         if(!id){
             this.id = v4()
         }
+
+        const isNull = Object.values(props).some(
+            (value) => value === null || value === ""
+        );
+
+        if(isNull){
+            throw new Error("Nenhum campo pode estar vazio")
+        }
+      
     }
 }
