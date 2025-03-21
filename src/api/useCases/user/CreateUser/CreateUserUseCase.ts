@@ -1,6 +1,6 @@
 import { hashPassword } from "../../../../helpers/encryption";
 import { IUserRepository } from "../../../repositories/user/IUserRepository";
-import { User } from "../../../entities/User";
+import { User } from "../../../entities/User/User";
 import { ICreateUserRequestDTO } from "./CreateUserDTO";
 
 export class CreateUserUseCase {

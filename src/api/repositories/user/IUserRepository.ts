@@ -1,5 +1,5 @@
 import { IUserInput, IUserUpdate } from "../../controllers/users/userProtocols";
-import { User } from "../../entities/User";
+import { User } from "../../entities/User/User";
 
 export interface IUserRepository{
     create(data: IUserInput):Promise<User>

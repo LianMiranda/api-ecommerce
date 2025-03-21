@@ -4,7 +4,7 @@ import {
   IUserUpdate,
 } from "../../../controllers/users/userProtocols";
 import { IUserRepository } from "../IUserRepository";
-import { User } from "../../../entities/User";
+import { User } from "../../../entities/User/User";
 
 const prisma = new PrismaClient();
 
