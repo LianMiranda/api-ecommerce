@@ -1,3 +1,5 @@
+/* The `CreateUserUseCase` class handles the creation of a new user by validating input data, hashing
+the password, and interacting with the user repository. */
 import { hashPassword } from "../../../../helpers/encryption";
 import { IUserRepository } from "../../../repositories/user/IUserRepository";
 import { User } from "../../../entities/User/User";
@@ -9,14 +11,18 @@ export class CreateUserUseCase {
   async create(data: ICreateUserRequestDTO) {
 
     const isNull = Object.values(data).some(
-      (value) => value === null || value === ""
+      (value) => 
+        (typeof value === "string" && value.trim() === "") || 
+        (value instanceof Date && isNaN(value.getTime())) ||   
+        value === null                                         
     );
+    
 
     if (isNull) {
       return {
         status: false,
         StatusCode: 400,
-        message: "Verifique os campos!",
+        message: "Nenhum campo pode estar vazio!",
         body: {},
       };
     }
