@@ -8,7 +8,6 @@ export class CreateUserController{
 
   async create(req: Request, res: Response):Promise<Response>{
     const data = req.body;
-    data.birthday = new Date(data.birthday);
     
     try {
       const {StatusCode, message, body} = await this.createUserUseCase.create(data);
