@@ -57,7 +57,6 @@ export class CreateUserUseCase {
     data.password = hash;
 
     try {
-      data.birthday = new Date(data.birthday);
       const user = new User(data);
 
       await this.userRepository.create(user);
