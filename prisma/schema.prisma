@@ -12,7 +12,7 @@ model User {
   email     String    @unique
   password  String
   cpf       String    @unique
-  birthday  DateTime  @db.Date
+  birthday  String
   products  Product[]
   profile   Profile   @relation(fields: [profileId], references: [id])
   profileId String   

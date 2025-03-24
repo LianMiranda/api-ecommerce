@@ -6,7 +6,7 @@ export class User{
     public email!: string;
     public password!: string;
     public cpf!: string;
-    public birthday!: Date;
+    public birthday!: string;
     public profileId!: string;
 
     constructor(props: Omit<User, "id">, id?: string){

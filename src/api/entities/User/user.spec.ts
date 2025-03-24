@@ -8,7 +8,7 @@ test("create an user", () => {
         email: "john@gmail.com ",
         password: "12345",
         cpf: "00011122233",
-        birthday: new Date("2000-01-01"),
+        birthday: "2000-01-01",
         profileId: "1",
     });
 
@@ -24,7 +24,7 @@ test("it should not be possible to create a user with empty fields", () => {
             email: "",
             password: "12345",
             cpf: "00011122233",
-            birthday: new Date("2000-01-01"),
+            birthday: "2000-01-01",
             profileId: "1",
         });
     }).toThrow()

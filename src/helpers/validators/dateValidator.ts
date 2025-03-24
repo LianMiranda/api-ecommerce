@@ -5,17 +5,17 @@ export async function dateValidator(
   date: string
 ): Promise<IHttpReturn<object>> {
   try {
-    const birthDate = new Date(date);
     const checkDate = isDate(date, { format: "YYYY-MM-DD", strictMode: true });
-
+    
     if (!checkDate)
       return {
-        status: false,
-        StatusCode: 400,
-        message: "Verifique se a data esta no formato YYYY-MM-DD",
-        body: {},
-      };
-
+    status: false,
+    StatusCode: 400,
+    message: "Verifique se a data esta no formato YYYY-MM-DD",
+    body: {},
+  };
+  
+    const birthDate = new Date(date);
     const today = new Date();
     const minDate = new Date(
       today.getFullYear() - 18,
