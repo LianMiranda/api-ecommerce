@@ -1,5 +1,5 @@
-import { env } from "../../config/env"
 import bcrypt from "bcrypt"
+import { env } from "../config/env";
 
 export async function hashPassword(password: string){
     if(env.encryption.salt === undefined){
@@ -13,8 +13,8 @@ export async function hashPassword(password: string){
     return hash;
 }
 
-export async function compare(actualPassword: string, userPassword: string){
-    const verify = await bcrypt.compare(actualPassword, userPassword);
+export async function compare(inputPassword: string, passwordToBeVerified: string){
+    const verify = await bcrypt.compare(inputPassword, passwordToBeVerified);
 
     return verify
 }
