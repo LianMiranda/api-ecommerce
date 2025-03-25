@@ -3,6 +3,6 @@ export interface ICreateUserRequestDTO {
   email: string;
   password: string;
   cpf: string;
-  birthday: Date;
+  birthday: string;
   profileId: string;
 }

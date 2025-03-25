@@ -8,7 +8,6 @@ export class CreateUserController{
 
   async create(req: Request, res: Response):Promise<Response>{
     const data = req.body;
-    data.birthday = new Date(data.birthday);
     
     try {
       const {StatusCode, message, body} = await this.createUserUseCase.create(data);
@@ -16,7 +15,7 @@ export class CreateUserController{
       return res.status(StatusCode).json({message, body});
   
     } catch (error) {
-      return res.status(500).json({error: "Internal server error"})
+      return res.status(500).json({message: "Internal server error", error})
       console.error(error);
     }
 }

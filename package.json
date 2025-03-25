@@ -2,9 +2,10 @@
   "name": "api-ecommerce",
   "version": "1.0.0",
   "main": "index.js",
+  
   "scripts": {
     "dev": "tsx watch src/server/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +17,8 @@
     "@prisma/client": "^6.5.0",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "validator": "^13.15.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
@@ -28,6 +30,7 @@
     "prisma": "^6.5.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.1"
+    "typescript-eslint": "^8.26.1",
+    "vitest": "^3.0.9"
   }
 }
