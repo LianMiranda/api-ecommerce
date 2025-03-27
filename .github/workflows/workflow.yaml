@@ -1,0 +1,19 @@
+name: Cotinuous Integration (CI);
+
+on: pull_request
+
+jobs: 
+  constinuous-integration: 
+    runs-on: ubunto-latest
+  
+  steps:
+    - uses: actions/checkout@v3
+    - name: using Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 20.x
+
+    - name: run intall and test
+      run: |
+        npm intall
+        npm run test
