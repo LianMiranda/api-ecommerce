@@ -7,7 +7,7 @@ export async function hashPassword(password: string){
     }
 
     const salt: string | number = env.encryption.salt
-    const genSalt = await bcrypt.genSalt(Number(salt))
+    const genSalt = await bcrypt.genSalt(Number(salt) || 10)
     const hash: string = await bcrypt.hash(password, genSalt.toString());
 
     return hash;
