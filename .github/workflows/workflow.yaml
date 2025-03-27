@@ -17,3 +17,4 @@ jobs:
       run: |
         npm intall
         npm run test
+        
