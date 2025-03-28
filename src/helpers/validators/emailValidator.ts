@@ -20,7 +20,9 @@ export async function emailValidator(
     };
   } catch (error) {
     console.error(error);
-
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new CustomError("Internal server error", 500);
   }
 }

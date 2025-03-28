@@ -29,6 +29,9 @@ export async function dateValidator(
     return { status: true, StatusCode: 200, message: "Ok", body: {} };
   } catch (error) {
     console.error(error);
+    if (error instanceof CustomError) {
+      throw error;
+    }
     throw new CustomError("Internal server error", 500);
   }
 }
