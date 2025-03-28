@@ -7,6 +7,7 @@ import { deleteUserController } from "../api/useCases/user/Delete";
 import { signInController } from "../api/useCases/auth/SignIn";
 import { profileController } from "../api/useCases/user/Profile";
 import { isAuthenticate } from "../api/middlewares/authMiddleware";
+import { regiterController } from "../api/useCases/auth/Register";
 
 export const router = express.Router();
 
@@ -37,4 +38,8 @@ router.delete("/user/:id", async (req, res) => {
 //auth
 router.post("/signIn", async (req, res) => {
   signInController.signIn(req, res);
+});
+
+router.post("/register", async (req, res) => {
+  regiterController.register(req, res);
 });
