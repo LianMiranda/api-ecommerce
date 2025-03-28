@@ -11,8 +11,8 @@ import { regiterController } from "../api/useCases/auth/Register";
 
 export const router = express.Router();
 
-router.post("/user", async (req, res) => {
-  createUserController.create(req, res);
+router.post("/user", async (req, res, next) => {
+  createUserController.create(req, res, next);
 });
 
 router.get("/users", isAuthenticate, async (req, res) => {
