@@ -3,5 +3,5 @@ export interface IHttpReturn<T> {
   StatusCode: number;
   message: string;
   body?: T;
-  access_token?: string
+  access_token?: string;
 }
