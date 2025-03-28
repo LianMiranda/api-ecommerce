@@ -1,9 +1,10 @@
+import { CustomError } from "../../../../helpers/CustomError/customError";
 import { IUserRepository } from "../../../repositories/user/IUserRepository";
 
 export class FindAllUsersUseCase {
   constructor(private userRepository: IUserRepository) {}
 
-  async findAll(){
+  async findAll() {
     const user = await this.userRepository.findAll();
 
     if (user.length != 0) {
@@ -15,11 +16,6 @@ export class FindAllUsersUseCase {
       };
     }
 
-    return {
-      status: false,
-      StatusCode: 404,
-      message: "Nenhum usuário encontrado",
-      body: [],
-    };
+    throw new CustomError("Nenhum usuário encontrado", 404);
   }
 }

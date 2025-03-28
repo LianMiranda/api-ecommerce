@@ -15,8 +15,8 @@ router.post("/user", async (req, res, next) => {
   createUserController.create(req, res, next);
 });
 
-router.get("/users", isAuthenticate, async (req, res) => {
-  findAllUsersController.findAll(req, res);
+router.get("/users", isAuthenticate, async (req, res, next) => {
+  findAllUsersController.findAll(req, res, next);
 });
 
 router.get("/user/profile", isAuthenticate, async (req, res) => {
