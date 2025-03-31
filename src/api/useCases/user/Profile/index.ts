@@ -6,4 +6,4 @@ const usersRepository = new UsersRepository();
 const profileUseCase = new ProfileUseCase(usersRepository);
 const profileController = new ProfileController(profileUseCase);
 
-export { profileController, profileUseCase };
+export { profileController };

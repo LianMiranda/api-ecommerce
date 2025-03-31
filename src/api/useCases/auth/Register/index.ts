@@ -3,6 +3,6 @@ import { createUserUseCase } from "../../user/CreateUser";
 import { RegisterUseCase } from "./RegiserUseCase";
 
 const registerUseCase = new RegisterUseCase(createUserUseCase);
-const regiterController = new RegisterUserController(registerUseCase);
+const registerController = new RegisterUserController(registerUseCase);
 
-export { registerUseCase, regiterController };
+export { registerController };
