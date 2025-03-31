@@ -35,3 +35,20 @@ jobs:
 
       - name: run ts-prune
         run: npx ts-prune --error
+
+  testing: 
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Restore node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: run tests
+        run: npm run test
