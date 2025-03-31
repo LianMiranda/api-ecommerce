@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx watch src/server/server.ts",
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "author": "",
   "license": "ISC",
