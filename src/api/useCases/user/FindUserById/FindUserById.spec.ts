@@ -12,38 +12,39 @@ const mockUserRepository = {
 };
 
 const userExpectExemple = [
-  new User({
-    fullName: "John Super Doe",
-    email: "john-super-doe@gmail.com",
-    password: "12345",
-    cpf: "35285851025",
-    birthday: "2000-01-01",
-    profileId: "1",
-  }, "1"),
+  new User(
+    {
+      fullName: "John Super Doe",
+      email: "john-super-doe@gmail.com",
+      password: "12345",
+      cpf: "35285851025",
+      birthday: "2000-01-01",
+      profileId: "1",
+    },
+    "1"
+  ),
 ];
 
 describe("Find User By Id", () => {
-    beforeEach(() => {
-        vi.resetAllMocks();
-    });
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
 
-    const findById = new FindUserByIdUseCase(mockUserRepository);
+  const findById = new FindUserByIdUseCase(mockUserRepository);
 
-    it("should get the specific user", async () => {
-        mockUserRepository.findById.mockResolvedValue(userExpectExemple[0]);
-        const response = await findById.findById("1");        
+  it("should get the specific user", async () => {
+    mockUserRepository.findById.mockResolvedValue(userExpectExemple[0]);
+    const response = await findById.findById("1");
 
-        expect(response.StatusCode).toBe(200);
-        expect(response.body).toBeInstanceOf(User);
-        expect(response.message).toBe("Usuários encontrados");
-    })
+    expect(response.StatusCode).toBe(200);
+    expect(response.body).toBeInstanceOf(User);
+    expect(response.message).toBe("Usuários encontrados");
+  });
 
-    it("should not get the specific user if it does not exist", async () => {
-        mockUserRepository.findById.mockResolvedValue(null);
-        const response = await findById.findById("321321312312");        
-
-        expect(response.body).toEqual([]);
-        expect(response.message).toBe("Nenhum usuário encontrado");
-        expect(response.StatusCode).toBe(404)
-    })
+  it("should not get the specific user if it does not exist", async () => {
+    mockUserRepository.findById.mockResolvedValue(null);
+    expect(findById.findById("321321312312")).rejects.toThrow(
+      "Nenhum usuário encontrado"
+    );
+  });
 });

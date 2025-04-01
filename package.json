@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx watch src/server/server.ts",
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +33,7 @@
     "eslint": "^9.22.0",
     "globals": "^16.0.0",
     "prisma": "^6.5.0",
+    "ts-prune": "^0.10.3",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.1",

@@ -1,3 +1,4 @@
+import { CustomError } from "../../../../helpers/CustomError/customError";
 import { IHttpReturn } from "../../../controllers/protocols";
 import { User } from "../../../entities/User/User";
 import { IUserRepository } from "../../../repositories/user/IUserRepository";
@@ -17,11 +18,6 @@ export class ProfileUseCase {
       };
     }
 
-    return {
-      status: false,
-      StatusCode: 404,
-      message: "Nenhum usuário encontrado",
-      body: [],
-    };
+    throw new CustomError("Nenhum usuário encontrado", 404);
   }
 }

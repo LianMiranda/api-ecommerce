@@ -6,6 +6,6 @@ const usersRepository = new UsersRepository();
 const findAllUsersUseCase = new FindAllUsersUseCase(usersRepository);
 const findAllUsersController = new FindAllUsersController(findAllUsersUseCase);
 
-export{findAllUsersUseCase, findAllUsersController}
+export{findAllUsersController}
 
 
