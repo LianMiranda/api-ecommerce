@@ -1,3 +1,4 @@
+import { CustomError } from "../../../../helpers/CustomError/customError";
 import { IUserRepository } from "../../../repositories/user/IUserRepository";
 
 export class DeleteUserUseCase{
@@ -7,12 +8,7 @@ export class DeleteUserUseCase{
         const verifyUserExists = await this.userRepository.findById(id);
 
         if (!verifyUserExists) {
-          return {
-            status: false,
-            StatusCode: 404,
-            message: "Nenhum usuário encontrado",
-            body: {},
-          };
+         throw new CustomError("Nenhum usuário encontrado", 404)
         }
 
         const user = await this.userRepository.delete(id);

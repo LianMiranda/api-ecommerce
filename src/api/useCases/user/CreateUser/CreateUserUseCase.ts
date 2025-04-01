@@ -8,6 +8,7 @@ import { emailValidator } from "../../../../helpers/validators/emailValidator";
 import { dateValidator } from "../../../../helpers/validators/dateValidator";
 import { IHttpReturn } from "../../../controllers/protocols";
 import { cpfValidator } from "../../../../helpers/validators/cpfValidator";
+import { CustomError } from "../../../../helpers/CustomError/customError";
 
 export class CreateUserUseCase {
   constructor(private userRepository: IUserRepository) {}
@@ -21,12 +22,7 @@ export class CreateUserUseCase {
     );
 
     if (isNull) {
-      return {
-        status: false,
-        StatusCode: 400,
-        message: "Nenhum campo pode estar vazio!",
-        body: {},
-      };
+      throw new CustomError("Nenhum campo pode estar vazio!", 400);
     }
 
     const checkEmail = await emailValidator(data.email);
@@ -38,12 +34,7 @@ export class CreateUserUseCase {
     const checkCpf = await cpfValidator(data.cpf);
 
     if (!checkCpf) {
-      return {
-        status: false,
-        StatusCode: 400,
-        message: "Informe um cpf válido e somente com números",
-        body: {},
-      };
+      throw new CustomError("Informe um cpf válido e somente com números", 400);
     }
 
     const checkBirthday = await dateValidator(data.birthday.toString());
@@ -72,20 +63,10 @@ export class CreateUserUseCase {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((error as any).code === "P2002") {
-        return {
-          status: false,
-          StatusCode: 400,
-          message: "Email ou CPF já cadastrados",
-          body: {},
-        };
+        throw new CustomError("Email ou CPF já cadastrados", 409);
       }
 
-      return {
-        status: false,
-        StatusCode: 500,
-        message: "Internal server error",
-        body: {},
-      };
+      throw new CustomError("Internal server error", 500);
     }
   }
 }

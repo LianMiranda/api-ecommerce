@@ -1,11 +1,15 @@
 name: Continuous Integration (CI);
 
+<<<<<<< HEAD
 on:
   pull_request:
     branches: ["main", "dev"]
 
   push:
     branches: ["main"]
+=======
+on: [pull_request]
+>>>>>>> c88b9c905eb080e7345c20edbd12cbe3ad86988e
 
 jobs:
   install:
@@ -24,7 +28,11 @@ jobs:
       - name: install dependencies
         run: npm install
 
+<<<<<<< HEAD
   unusedexports:
+=======
+  unusedexports: 
+>>>>>>> c88b9c905eb080e7345c20edbd12cbe3ad86988e
     name: Find unused exports (dead code)
     runs-on: ubuntu-latest
     needs: install
@@ -41,7 +49,11 @@ jobs:
       - name: run ts-prune
         run: npx ts-prune --error
 
+<<<<<<< HEAD
   testing:
+=======
+  testing: 
+>>>>>>> c88b9c905eb080e7345c20edbd12cbe3ad86988e
     name: Run unit tests
     runs-on: ubuntu-latest
     needs: install
@@ -58,7 +70,11 @@ jobs:
       - name: run tests
         run: npm run test
 
+<<<<<<< HEAD
   lint:
+=======
+  lint: 
+>>>>>>> c88b9c905eb080e7345c20edbd12cbe3ad86988e
     name: Run eslint verification
     runs-on: ubuntu-latest
     needs: install

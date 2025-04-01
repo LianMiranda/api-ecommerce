@@ -6,7 +6,7 @@ const usersRepository = new UsersRepository();
 const findUserByIdUseCase = new FindUserByIdUseCase(usersRepository);
 const findUserByIdController = new FindUserByIdController(findUserByIdUseCase);
 
-export {findUserByIdUseCase, findUserByIdController}
+export {findUserByIdController}
 
 
 

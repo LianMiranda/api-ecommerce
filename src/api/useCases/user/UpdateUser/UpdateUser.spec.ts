@@ -7,6 +7,7 @@ const mockUserRepository = {
   create: vi.fn(),
   findAll: vi.fn(),
   findById: vi.fn(),
+  findByEmail: vi.fn(),
   update: vi.fn(),
   delete: vi.fn(),
 };
@@ -57,11 +58,9 @@ describe("Update User", () => {
   it("should not be possible to update a user that does not exist", async () => {
     mockUserRepository.findById.mockResolvedValue(null);
 
-    const response = await updateUser.update("1234", userTestExampleUpdated);
-
-    expect(response.StatusCode).toBe(404);
-    expect(response.message).toBe("Usuário não encontrado");
-    expect(response.body).toEqual({});
+    await expect(
+      updateUser.update("1234", userTestExampleUpdated)
+    ).rejects.toThrow("Nenhum usuário encontrado");
   });
 
   it("it should not be possible to update a user who has only added the new password", async () => {
@@ -72,13 +71,11 @@ describe("Update User", () => {
       return Promise.resolve(new User(updatedData, id));
     });
 
-    const response = await updateUser.update("dlsksdljksaldkjasdkljasd", {
-      password: "12222",
-    });
-
-    expect(response.StatusCode).toBe(400);
-    expect(response.message).toBe("A senha atual do usuário deve ser digitada");
-    expect(response.body).toEqual({});
+    await expect(
+      updateUser.update("dlsksdljksaldkjasdkljasd", {
+        password: "12222",
+      })
+    ).rejects.toThrow("A senha atual do usuário deve ser digitada");
   });
 
   it("should not be possible to update a user who has added wrong actualPassword", async () => {
@@ -89,16 +86,14 @@ describe("Update User", () => {
       return Promise.resolve(new User(updatedData, id));
     });
 
-    const response = await updateUser.update("dlsksdljksaldkjasdkljasd", {
-      password: "12222",
-      actualPassword: "552233",
-    });
-
-    expect(response.StatusCode).toBe(400);
-    expect(response.message).toBe("As senhas não condizem");
-    expect(response.body).toEqual({});
+    await expect(
+      updateUser.update("dlsksdljksaldkjasdkljasd", {
+        password: "12222",
+        actualPassword: "552233",
+      })
+    ).rejects.toThrow("As senhas não condizem");
   });
-  
+
   it("it should not be possible to update a user who added an invalid CPF", async () => {
     mockUserRepository.findById.mockResolvedValue(userTestExample);
     mockUserRepository.update.mockImplementation((id, data) => {
@@ -106,16 +101,13 @@ describe("Update User", () => {
       const updatedData = { ...userTestExample, ...data };
       return Promise.resolve(new User(updatedData, id));
     });
-
-    const response = await updateUser.update("dlsksdljksaldkjasdkljasd", {
-     cpf: "12312312323"
-    });
-
-    expect(response.StatusCode).toBe(400);
-    expect(response.message).toBe("Informe um cpf válido e somente com números");
-    expect(response.body).toEqual({});
+    expect(
+      updateUser.update("dlsksdljksaldkjasdkljasd", {
+        cpf: "12312312323",
+      })
+    ).rejects.toThrow("Informe um cpf válido e somente com números");
   });
-  
+
   it("it should not be possible to update a user who added an invalid email", async () => {
     mockUserRepository.findById.mockResolvedValue(userTestExample);
     mockUserRepository.update.mockImplementation((id, data) => {
@@ -124,15 +116,13 @@ describe("Update User", () => {
       return Promise.resolve(new User(updatedData, id));
     });
 
-    const response = await updateUser.update("dlsksdljksaldkjasdkljasd", {
-     email: "lian@.com"
-    });
-
-    expect(response.StatusCode).toBe(400);
-    expect(response.message).toBe("Informe um endereço de email válido");
-    expect(response.body).toEqual({});
+    await expect(
+      updateUser.update("dlsksdljksaldkjasdkljasd", {
+        email: "lian@.com",
+      })
+    ).rejects.toThrow("Informe um endereço de email válido");
   });
-  
+
   it("it should not be possible to update a user who added an invalid birthday format", async () => {
     mockUserRepository.findById.mockResolvedValue(userTestExample);
     mockUserRepository.update.mockImplementation((id, data) => {
@@ -140,27 +130,22 @@ describe("Update User", () => {
       const updatedData = { ...userTestExample, ...data };
       return Promise.resolve(new User(updatedData, id));
     });
-
-    const response = await updateUser.update("dlsksdljksaldkjasdkljasd", {
-     birthday: "2000/01/01"
-    });
-
-    expect(response.StatusCode).toBe(400);
-    expect(response.message).toBe("Verifique se a data esta no formato YYYY-MM-DD");
-    expect(response.body).toEqual({});
+    await expect(
+      updateUser.update("dlsksdljksaldkjasdkljasd", {
+        birthday: "2000/01/01",
+      })
+    ).rejects.toThrow("Verifique se a data esta no formato YYYY-MM-DD");
   });
 
   it("it should not be possible to update the user with data from another user that already exists", async () => {
     mockUserRepository.findById.mockResolvedValue(userTestExample);
     mockUserRepository.update.mockRejectedValueOnce({ code: "P2002" });
 
-    const response = await updateUser.update("dlsksdljksaldkjasdkljasd", {
-     email: "lian@gmail.com",
-     cpf: "05143709040"
-    });
-
-    expect(response.StatusCode).toBe(400);
-    expect(response.message).toBe("Email ou CPF já cadastrados");
-    expect(response.body).toEqual({});
+    expect(
+      updateUser.update("dlsksdljksaldkjasdkljasd", {
+        email: "lian@gmail.com",
+        cpf: "05143709040",
+      })
+    ).rejects.toThrow("Email ou CPF já cadastrados");
   });
 });
