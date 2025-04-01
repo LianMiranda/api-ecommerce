@@ -3,6 +3,7 @@ import { ISignInRequestDTO } from "./SignInRequestDTO";
 import { IHttpReturn } from "../../../controllers/protocols";
 import { compare } from "../../../../helpers/encryption";
 import { tokenGenerate } from "../../../../helpers/auth/token";
+import { CustomError } from "../../../../helpers/CustomError/customError";
 
 export class SignInUseCase {
   constructor(private userRepository: IUserRepository) {}
@@ -11,12 +12,7 @@ export class SignInUseCase {
     const userExists = await this.userRepository.findByEmail(data.email);
 
     if (!userExists) {
-      return {
-        StatusCode: 404,
-        status: false,
-        message: "Credenciais inválidas",
-        body: {},
-      };
+      throw new CustomError("Credenciais inválidas", 400);
     }
 
     try {
@@ -33,21 +29,10 @@ export class SignInUseCase {
         };
       }
 
-      return {
-        StatusCode: 400,
-        status: false,
-        message: "Credenciais inválidas",
-        body: {},
-      };
+      throw new CustomError("Credenciais inválidas", 400);
     } catch (error) {
       console.error(error);
-
-      return {
-        StatusCode: 500,
-        status: false,
-        message: "Internal server error",
-        body: {},
-      };
+      throw new CustomError("Internal server error", 500);
     }
   }
 }
