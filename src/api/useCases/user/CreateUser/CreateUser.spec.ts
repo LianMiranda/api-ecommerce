@@ -7,6 +7,7 @@ const mockUserRepository = {
   create: vi.fn(),
   findAll: vi.fn(),
   findById: vi.fn(),
+  findByEmail: vi.fn(),
   update: vi.fn(),
   delete: vi.fn(),
 };
@@ -44,40 +45,33 @@ describe("Create User", () => {
   });
 
   it("should be unable to create a user with empty fields", async () => {
-    mockUserRepository.create.mockResolvedValue({
-      status: false,
-      StatusCode: 400,
-      message: "Nenhum campo pode estar vazio!",
-      body: {},
-    });
+    mockUserRepository.create.mockResolvedValue(null);
 
-    const response = await createUser.create({
-      fullName: " ",
-      email: " ",
-      password: "12345",
-      cpf: "00011122233",
-      birthday: "2000-01-01",
-      profileId: "1",
-    });
-
-    expect(response.body).toEqual({});
-    expect(response.message).toBe("Nenhum campo pode estar vazio!");
+    await expect(
+      createUser.create({
+        fullName: " ",
+        email: " ",
+        password: "12345",
+        cpf: "00011122233",
+        birthday: "2000-01-01",
+        profileId: "1",
+      })
+    ).rejects.toThrow("Nenhum campo pode estar vazio!");
   });
 
   it("should not be possible to create a user that already exists", async () => {
     mockUserRepository.create.mockRejectedValueOnce({ code: "P2002" });
 
-    const response = await createUser.create({
-      fullName: "John Doe",
-      email: "john@gmail.com",
-      password: "12345",
-      cpf: "53250359084",
-      birthday: "2000-01-01",
-      profileId: "1",
-    });
-
-    expect(response.body).toEqual({});
-    expect(response.message).toBe("Email ou CPF já cadastrados");
+    await expect(
+      createUser.create({
+        fullName: "John Doe",
+        email: "john@gmail.com",
+        password: "12345",
+        cpf: "78762184075",
+        birthday: "2000-01-01",
+        profileId: "1",
+      })
+    ).rejects.toThrow("Email ou CPF já cadastrados");
   });
 
   it("should not be possible to create a user with an invalid format birthday", async () => {
@@ -86,18 +80,16 @@ describe("Create User", () => {
       body: {},
     });
 
-    const response = await createUser.create({
-      fullName: "John Doe",
-      email: "john1@gmail.com",
-      password: "12345",
-      cpf: "49087727038",
-      birthday: "2000/01-01",
-      profileId: "1",
-    });
-
-    expect(response.message).toBe(
-      "Verifique se a data esta no formato YYYY-MM-DD"
-    );
+    await expect(
+      createUser.create({
+        fullName: "John Doe",
+        email: "john1@gmail.com",
+        password: "12345",
+        cpf: "49087727038",
+        birthday: "2000/01-01",
+        profileId: "1",
+      })
+    ).rejects.toThrow("Verifique se a data esta no formato YYYY-MM-DD");
   });
 
   it("should not be possible to create a user with an invalid cpf", async () => {
@@ -106,33 +98,32 @@ describe("Create User", () => {
       body: {},
     });
 
-    const response = await createUser.create({
-      fullName: "John Doe",
-      email: "john1@gmail.com",
-      password: "12345",
-      cpf: "65979711107",
-      birthday: "2000-01-01",
-      profileId: "1",
-    });
-
-    expect(response.message).toBe(
-      "Informe um cpf válido e somente com números"
-    );
+    await expect(
+      createUser.create({
+        fullName: "John Doe",
+        email: "john1@gmail.com",
+        password: "12345",
+        cpf: "323232323223",
+        birthday: "2000-01-01",
+        profileId: "1",
+      })
+    ).rejects.toThrow("Informe um cpf válido e somente com números");
   });
+
   it("should not be possible to create a user with an invalid email", async () => {
     mockUserRepository.create.mockResolvedValue({
       message: "Informe um endereço de email válido",
     });
 
-    const response = await createUser.create({
-      fullName: "John Doe",
-      email: "john21.com",
-      password: "12345",
-      cpf: "75463463042",
-      birthday: "2000-01-01",
-      profileId: "1",
-    });
-
-    expect(response.message).toBe("Informe um endereço de email válido");
+     await expect(
+      createUser.create({
+        fullName: "John Doe",
+        email: "john12",
+        password: "12345",
+        cpf: "67708692091",
+        birthday: "2000-01-01",
+        profileId: "1",
+      })
+    ).rejects.toThrow("Informe um endereço de email válido");
   });
 });

@@ -59,6 +59,21 @@ export class UsersRepository implements IUserRepository {
     });
   }
 
+  async findByEmail(email: string):Promise<User | null> {
+    return this.model.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        password: true,
+        cpf: true,
+        birthday: true,
+        profileId: true,
+      },
+    });
+  }
+
   async update(id: string, data: Partial<IUserUpdate>): Promise<User>{
     return this.model.update({
       where: { id },

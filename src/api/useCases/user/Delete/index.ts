@@ -7,4 +7,4 @@ const userRepository = new UsersRepository();
 const deleteUserUseCase = new DeleteUserUseCase(userRepository);
 const deleteUserController = new DeleteUserController(deleteUserUseCase);
 
-export {deleteUserController, deleteUserUseCase}
+export { deleteUserController }

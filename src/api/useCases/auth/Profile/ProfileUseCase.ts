@@ -1,17 +1,19 @@
 import { CustomError } from "../../../../helpers/CustomError/customError";
+import { IHttpReturn } from "../../../controllers/protocols";
+import { User } from "../../../entities/User/User";
 import { IUserRepository } from "../../../repositories/user/IUserRepository";
 
-export class FindAllUsersUseCase {
+export class ProfileUseCase {
   constructor(private userRepository: IUserRepository) {}
 
-  async findAll() {
-    const user = await this.userRepository.findAll();
+  async profile(id: string): Promise<IHttpReturn<User | []>> {
+    const user = await this.userRepository.findById(id);
 
-    if (user.length != 0) {
+    if (user) {
       return {
         status: true,
         StatusCode: 200,
-        message: "Usuários encontrados",
+        message: "Perfil do usuário logado",
         body: user,
       };
     }

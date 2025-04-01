@@ -1,10 +1,11 @@
-import { compare } from "bcrypt";
+import { compare } from "../../../../helpers/encryption";
 import { IUserRepository } from "../../../repositories/user/IUserRepository";
 import { IUpdateUserRequestDTO } from "./UpdateUserDTO";
 import { hashPassword } from "../../../../helpers/encryption";
 import { emailValidator } from "../../../../helpers/validators/emailValidator";
 import { cpfValidator } from "../../../../helpers/validators/cpfValidator";
 import { dateValidator } from "../../../../helpers/validators/dateValidator";
+import { CustomError } from "../../../../helpers/CustomError/customError";
 
 export class UpdateUserUseCase {
   constructor(private userRepository: IUserRepository) {}
@@ -13,12 +14,7 @@ export class UpdateUserUseCase {
     const user = await this.userRepository.findById(id);
 
     if (!user) {
-      return {
-        status: false,
-        StatusCode: 404,
-        message: "Usuário não encontrado",
-        body: {},
-      };
+          throw new CustomError("Nenhum usuário encontrado", 404);
     }
 
     const userUpdate: IUpdateUserRequestDTO = {};
@@ -36,12 +32,7 @@ export class UpdateUserUseCase {
       const checkNewCpf = await cpfValidator(data.cpf);
 
       if (!checkNewCpf) {
-        return {
-          status: false,
-          StatusCode: 400,
-          message: "Informe um cpf válido e somente com números",
-          body: {},
-        };
+        throw new CustomError("Informe um cpf válido e somente com números", 400);
       }
 
       userUpdate.cpf = data.cpf;
@@ -58,27 +49,14 @@ export class UpdateUserUseCase {
     if (data.password && data.password.trim() != "") {
 
       if(!data.actualPassword){
-        return {
-          status: false,
-          StatusCode: 400,
-          message: "A senha atual do usuário deve ser digitada",
-          body: {},
-        };
+       throw new CustomError("A senha atual do usuário deve ser digitada", 400)
       }
 
 
-      const isValidPassword = await compare(
-        data.actualPassword ?? "",
-        user?.password ?? ""
-      );
+      const isValidPassword = await compare(data.actualPassword, user.password);      
 
       if (!isValidPassword) {
-        return {
-          status: false,
-          StatusCode: 400,
-          message: "As senhas não condizem",
-          body: {},
-        };
+        throw new CustomError("As senhas não condizem", 401)
       }
 
       const hash = await hashPassword(data.password);
@@ -98,22 +76,12 @@ export class UpdateUserUseCase {
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((error as any).code === "P2002") {
-        return {
-          status: false,
-          StatusCode: 400,
-          message: "Email ou CPF já cadastrados",
-          body: {},
-        };
+        throw new CustomError("Email ou CPF já cadastrados", 409);
       }
 
       console.log(error);
 
-      return {
-        status: false,
-        StatusCode: 500,
-        message: "Internal server error",
-        body: {},
-      };
+      throw new CustomError("Internal server error", 500);
     }
   }
 }
