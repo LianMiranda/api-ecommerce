@@ -1,10 +1,15 @@
 import { Request, Response } from "express";
 import { RegisterUseCase } from "../../../useCases/auth/Register/RegiserUseCase";
+import { NextFunction } from "express-serve-static-core";
 
 export class RegisterUserController {
   constructor(private registerUseCase: RegisterUseCase) {}
 
-  async register(req: Request, res: Response): Promise<Response> {
+  async register(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
     const data = req.body;
 
     try {
@@ -14,7 +19,7 @@ export class RegisterUserController {
       return res.status(StatusCode).json({ message, access_token });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: "Internal server error", error });
+      next(error);
     }
   }
 }
