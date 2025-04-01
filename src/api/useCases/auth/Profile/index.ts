@@ -1,4 +1,4 @@
-import { ProfileController } from "../../../controllers/users/Profile/Profile";
+import { ProfileController } from "../../../controllers/auth/Profile/Profile";
 import { UsersRepository } from "../../../repositories/user/implementations/user";
 import { ProfileUseCase } from "./ProfileUseCase";
 
