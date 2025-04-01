@@ -3,8 +3,6 @@ import { CustomError } from "../../helpers/CustomError/customError";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function errorHandler(err: Error | CustomError, req: Request, res: Response, next: NextFunction){
-  console.error("Erro capturado!!!!!!!!!!!!!!!", err);
-
   if(err instanceof CustomError){
     const status = err.statusCode || 500;
     const message = err.message || "Internal server error";

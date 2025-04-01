@@ -53,10 +53,7 @@ export class UpdateUserUseCase {
       }
 
 
-      const isValidPassword = await compare(data.actualPassword, user.password);
-
-      console.log(isValidPassword);
-      
+      const isValidPassword = await compare(data.actualPassword, user.password);      
 
       if (!isValidPassword) {
         throw new CustomError("As senhas não condizem", 401)
