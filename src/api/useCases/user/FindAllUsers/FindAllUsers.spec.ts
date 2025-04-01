@@ -30,7 +30,7 @@ const expectUsersExemple: object = [
   }),
 ];
 
-describe("Get all users", () => {
+describe("Find all users", () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -41,18 +41,15 @@ describe("Get all users", () => {
 
     const response = await getUsers.findAll();
     response.body.forEach((user: unknown) => {
-        expect(user).toBeInstanceOf(User)
+      expect(user).toBeInstanceOf(User);
     });
     expect(response.StatusCode).toBe(200);
   });
 
- it("shouldn't be possible to search for users if there aren't any", async () => {
+  it("shouldn't be possible to search for users if there aren't any", async () => {
     mockUserRepository.findAll.mockResolvedValue([]);
-
-    const response = await getUsers.findAll();
-    
-    expect(response.body).toEqual([]);
-    expect(response.message).toBe("Nenhum usuário encontrado");
-    expect(response.StatusCode).toBe(404)
- });
+    await expect(getUsers.findAll()).rejects.toThrow(
+      "Nenhum usuário encontrado"
+    );
+  });
 });
