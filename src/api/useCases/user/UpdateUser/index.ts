@@ -6,4 +6,4 @@ const userRepository = new UsersRepository();
 const updateUserUseCase = new UpdateUserUseCase(userRepository);
 const updateUserController = new UpdateUserController(updateUserUseCase);
 
-export{updateUserUseCase, updateUserController}
+export{updateUserController}

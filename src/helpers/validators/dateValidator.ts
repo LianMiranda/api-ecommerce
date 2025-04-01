@@ -1,20 +1,19 @@
 import { isDate } from "validator";
 import { IHttpReturn } from "../../api/controllers/protocols";
+import { CustomError } from "../CustomError/customError";
 
 export async function dateValidator(
   date: string
 ): Promise<IHttpReturn<object>> {
   try {
     const checkDate = isDate(date, { format: "YYYY-MM-DD", strictMode: true });
-    
+
     if (!checkDate)
-      return {
-    status: false,
-    StatusCode: 400,
-    message: "Verifique se a data esta no formato YYYY-MM-DD",
-    body: {},
-  };
-  
+      throw new CustomError(
+        "Verifique se a data esta no formato YYYY-MM-DD",
+        400
+      );
+
     const birthDate = new Date(date);
     const today = new Date();
     const minDate = new Date(
@@ -24,22 +23,15 @@ export async function dateValidator(
     );
 
     if (birthDate > minDate) {
-      return {
-        status: false,
-        StatusCode: 400,
-        message: "Você precisa ter pelo menos 18 anos!",
-        body: {},
-      };
+      throw new CustomError("Você precisa ter pelo menos 18 anos!", 400);
     }
 
     return { status: true, StatusCode: 200, message: "Ok", body: {} };
   } catch (error) {
     console.error(error);
-    return {
-      status: false,
-      StatusCode: 500,
-      message: "Erro interno no servidor.",
-      body: {},
-    };
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError("Internal server error", 500);
   }
 }
