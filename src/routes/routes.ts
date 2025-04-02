@@ -1,5 +1,4 @@
 import express from "express";
-import { createUserController } from "../api/useCases/user/CreateUser";
 import { findAllUsersController } from "../api/useCases/user/FindAllUsers";
 import { findUserByIdController } from "../api/useCases/user/FindUserById";
 import { updateUserController } from "../api/useCases/user/UpdateUser";
@@ -10,10 +9,6 @@ import { isAuthenticate } from "../api/middlewares/authMiddleware";
 import { registerController } from "../api/useCases/auth/Register";
 
 export const router = express.Router();
-
-router.post("/user", async (req, res, next) => {
-  createUserController.create(req, res, next);
-});
 
 router.get("/users", isAuthenticate, async (req, res, next) => {
   findAllUsersController.findAll(req, res, next);
