@@ -1,0 +1,364 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API ECOMMERCE (apenas na teoria, na pratica só tem usuario)",
+    "description": "O objetivo é se tornar uma api para lojas virtuais, para estudar um pouco mais a lógica desse tipo de serviço e também estudar a integração com apis de pagamento ",
+    "contact": { "email": "lian.mendes26@gmail.com" },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Api de teste"
+    },
+    {
+      "url": "https://api-ecommerce-6y4s.onrender.com",
+      "description": "Api de \"prod\""
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Cadastro de usuário com autenticação",
+        "description": "Rota responsável pela criação de um usuário, já sendo autenticado logo após a criação. \n\nOBS: O CPF deve ser valido, data de nascimento(birthday) deve ser no formato YYYY-MM-DD e +18 anos, se não um erro será lançado \n\nOBS2: profileId: 1 = customer | profileId: 2 = seller",
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInput"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "fullName": "usuario",
+                    "email": "usuario@gmail.com",
+                    "password": "0000",
+                    "cpf": "44542762009",
+                    "profileId": "1",
+                    "birthday": "2005-01-01"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "POSSIVEIS ERROS: \n\n\n- Nenhum campo pode estar vazio! \n\n- Informe um cpf válido e somente com números\n\n- Informe um endereço de email válido\n\n- Verifique se a data esta no formato YYYY-MM-DD \n"
+          },
+          "401": {
+            "description": "Você precisa ter pelo menos 18 anos!"
+          },
+          "409": {
+            "description": "Email ou CPF já cadastrados"
+          },
+          "201": {
+            "description": "CREATED",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/signIn": {
+      "post": {
+        "summary": "Login de usuário",
+        "description": "Rota responsável pelo login do usuário",
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInput"
+              },
+              "examples": {
+                "body": {
+                  "value": {
+                    "email": "usuario@gmail.com",
+                    "password": "0000"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "- Credenciais inválidas"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "summary": "Dados do perfil",
+        "description": "Puxa os dados do usuário que está logado, basta adicionar o token em authorize",
+        "tags": ["Auth"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/UserReturns"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nenhum usuário encontrado"
+          },
+          "401": {
+            "description": "POSSIVEIS ERROS: \n\n\n- Usuário não autorizado, token não fornecido \n\n- Token inválido.\n\n- jwt malformed"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Busca por todos os usuários da aplicação",
+        "description": "Essa rota busca todos os usuários cadastrados na aplicação",
+        "tags": ["User"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "$ref": "#/components/schemas/UserReturns"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nenhum usuário encontrado"
+          },
+          "401": {
+            "description": "POSSIVEIS ERROS: \n\n\n- Usuário não autorizado, token não fornecido \n\n- Token inválido.\n\n- jwt malformed"
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "summary": "Rota para buscar um usuario pelo id",
+        "description": "Essa rota busca o usuário referente ao id colocado",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id do usuário a ser buscado",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/UserReturns"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nenhum usuário encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar informações do usuário",
+        "description": "Essa rota faz o update do usuário. \n\nPara alterar a senha você deve colocar a senha atual do usuário em \"actualPassword\" e a nova senha em \"password\"",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id do usuário a ser buscado",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/UserUpdateInput"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "fullName": "usuario2",
+                    "email": "usuario2@gmail.com",
+                    "password": "1234",
+                    "actualPassword": "0000",
+                    "cpf": "44542762009",
+                    "birthday": "2005-01-01"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/UserReturns"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nenhum usuário encontrado"
+          },
+          "400": {
+            "description": "POSSIVEIS ERROS: \n\n\n- Nenhum campo pode estar vazio! \n\n- Informe um cpf válido e somente com números\n\n- Informe um endereço de email válido\n\n- Verifique se a data esta no formato YYYY-MM-DD\n\n- A senha atual do usuário deve ser digitada \n"
+          },
+          "401": {
+            "description": "POSSIVEIS ERROS: \n\n\n- Você precisa ter pelo menos 18 anos! \n\n- As senhas não condizem"
+          },
+          "409": {
+            "description": "Email ou CPF já cadastrados"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deleção de usuário",
+        "description": "Essa rota deleta o usuário referente ao id colocado",
+        "tags": ["User"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id do usuário a ser buscado",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/UserReturns"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nenhum usuário encontrado"
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "UserInput": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "cpf": {
+            "type": "string"
+          },
+          "profileId": {
+            "type": "string"
+          },
+          "birthday": {
+            "type": "string"
+          }
+        }
+      },
+      "UserUpdateInput": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "actualPassword": {
+            "type": "string"
+          },
+          "cpf": {
+            "type": "string"
+          },
+          "birthday": {
+            "type": "string"
+          }
+        }
+      },
+      "UserReturns": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "body": { "type": "object" }
+        }
+      },
+      "LoginInput": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "access_token": { "type": "string" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
