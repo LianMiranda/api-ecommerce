@@ -19,3 +19,7 @@ app.use(
     errorHandler(err, req, res, next);
   }
 );
+
+app.get("/", async (req: Request, res: Response):Promise<void> => {
+   res.send("Api rodou!")
+})
