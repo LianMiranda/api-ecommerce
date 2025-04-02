@@ -19,7 +19,7 @@ router.get("/users", isAuthenticate, async (req, res, next) => {
   findAllUsersController.findAll(req, res, next);
 });
 
-router.get("/user/profile", isAuthenticate, async (req, res, next) => {
+router.get("/profile", isAuthenticate, async (req, res, next) => {
   profileController.profile(req, res, next);
 });
 
