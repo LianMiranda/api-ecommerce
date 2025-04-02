@@ -13,11 +13,11 @@ export class SignInController {
     const data = req.body;
 
     try {
-      const { StatusCode, message, body } = await this.signInUseCase.signIn(
+      const { StatusCode, message, access_token } = await this.signInUseCase.signIn(
         data
       );
 
-      return res.status(StatusCode).json({ message, body });
+      return res.status(StatusCode).json({ message, access_token });
     } catch (error) {
       console.error(error);
       next(error);
