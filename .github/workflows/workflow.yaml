@@ -10,8 +10,6 @@ jobs:
   install:
     name: Installing Packages
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: development
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,13 +21,11 @@ jobs:
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: install dependencies
-        run: npm ci
+        run: npm install
 
   unusedexports:
     name: Find unused exports (dead code)
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: development
     needs: install
     steps:
       - name: Checkout
@@ -47,8 +43,6 @@ jobs:
   testing:
     name: Run unit tests
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: development
     needs: install
     steps:
       - name: Checkout
@@ -61,12 +55,10 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: run tests
-        run: npm run test
+        run: NODE_ENV=test npm run test
   lint:
     name: Run eslint verification
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: development
     needs: install
     steps:
       - name: Checkout
@@ -84,8 +76,6 @@ jobs:
   build:
     name: Run build
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: development
     needs: install
     steps:
       - name: Checkout
