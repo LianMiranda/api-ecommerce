@@ -21,7 +21,7 @@ jobs:
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: install dependencies
-        run: npm ci
+        run: npm install
 
   unusedexports:
     name: Find unused exports (dead code)
