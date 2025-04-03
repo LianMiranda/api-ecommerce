@@ -23,7 +23,7 @@ export async function dateValidator(
     );
 
     if (birthDate > minDate) {
-      throw new CustomError("Você precisa ter pelo menos 18 anos!", 400);
+      throw new CustomError("Você precisa ter pelo menos 18 anos!", 401);
     }
 
     return { status: true, StatusCode: 200, message: "Ok", body: {} };
