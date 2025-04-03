@@ -12,7 +12,7 @@ export class SignInUseCase {
     const userExists = await this.userRepository.findByEmail(data.email);
 
     if (!userExists) {
-      throw new CustomError("Credenciais inválidas", 400);
+      throw new CustomError("Credenciais inválidas", 401);
     }
 
     try {
@@ -25,11 +25,11 @@ export class SignInUseCase {
           StatusCode: 200,
           status: true,
           message: "Usuário logado!",
-          body: token,
+          access_token: token,
         };
       }
 
-      throw new CustomError("Credenciais inválidas", 400);
+      throw new CustomError("Credenciais inválidas", 401);
     } catch (error) {
       console.error(error);
       throw new CustomError("Internal server error", 500);
